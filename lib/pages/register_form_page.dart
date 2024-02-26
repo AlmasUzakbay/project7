@@ -7,7 +7,7 @@ import '../model/user.dart';
 import 'user_info_page.dart';
 
 class RegisterFormPage extends StatefulWidget {
-  const RegisterFormPage({super.key});
+  const RegisterFormPage({Key? key}) : super(key: key);
 
   @override
   State<RegisterFormPage> createState() => _RegisterFormPageState();
@@ -60,7 +60,7 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Register Form'),
+        title: Text(LocaleKeys.Register.tr()),
         centerTitle: true,
       ),
       body: Form(
@@ -76,8 +76,8 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
               },
               controller: _nameController,
               decoration: InputDecoration(
-                labelText: 'Full Name *',
-                hintText: 'What do people call you?',
+                labelText: LocaleKeys.registername.tr(),
+                hintText: LocaleKeys.registername.tr(),
                 prefixIcon: const Icon(Icons.person),
                 suffixIcon: GestureDetector(
                   onTap: () {
@@ -108,9 +108,9 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
               },
               controller: _phoneController,
               decoration: InputDecoration(
-                labelText: 'Phone Number *',
-                hintText: 'Where can we reach you?',
-                helperText: 'Phone format: (XXX)XXX-XXXX',
+                labelText: LocaleKeys.registernumber.tr(),
+                hintText: LocaleKeys.registernumber.tr(),
+                helperText: LocaleKeys.registernumber.tr(),
                 prefixIcon: const Icon(Icons.call),
                 suffixIcon: GestureDetector(
                   onLongPress: () {
@@ -132,31 +132,33 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
               ),
               keyboardType: TextInputType.phone,
               inputFormatters: [
-                FilteringTextInputFormatter(RegExp(r'^[()\d -]{1,15}$'),
-                    allow: true),
+                // FilteringTextInputFormatter.digitsOnly,
+                FilteringTextInputFormatter(
+                    RegExp(r'^[()\d -]{1,15}$'), allow: true),
               ],
               validator: (value) => validatePhoneNumber(value!)
                   ? null
-                  : 'Phone number must be entered as (###)###-####',
+                  : LocaleKeys.registernumber.tr(),
               onSaved: (value) => newUser.phone = value!,
             ),
             const SizedBox(height: 10),
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email Address',
-                hintText: 'Enater a email address',
-                icon: Icon(Icons.mail),
+              decoration: InputDecoration(
+                labelText: LocaleKeys.registermap.tr(),
+                hintText: LocaleKeys.registermap.tr(),
+                icon: const Icon(Icons.mail),
               ),
               keyboardType: TextInputType.emailAddress,
+              // validator: _validateEmail,
               onSaved: (value) => newUser.email = value!,
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField(
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  icon: Icon(Icons.map),
-                  labelText: 'Country?'),
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  icon: const Icon(Icons.map),
+                  labelText: LocaleKeys.registerstory.tr()),
               items: _countries.map((country) {
                 return DropdownMenuItem(
                   value: country,
@@ -170,15 +172,18 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
                 });
               },
               value: _selectedCountry,
+              // validator: (val) {
+              //   return val == null ? 'Please select a country' : null;
+              // },
             ),
             const SizedBox(height: 20),
             TextFormField(
               controller: _storyController,
-              decoration: const InputDecoration(
-                labelText: 'Life Story',
-                hintText: 'Tell us about your self',
-                helperText: 'Keep it short, this is just a demo',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: LocaleKeys.registerstory.tr(),
+                hintText: LocaleKeys.registerstory.tr(),
+                helperText: LocaleKeys.registerstory.tr(),
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
               inputFormatters: [
@@ -193,11 +198,11 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
               obscureText: _hidePass,
               maxLength: 8,
               decoration: InputDecoration(
-                labelText: 'Password *',
-                hintText: 'Enter the password',
+                labelText: LocaleKeys.registerpassword.tr(),
+                hintText: LocaleKeys.registerpassword.tr(),
                 suffixIcon: IconButton(
-                  icon:
-                      Icon(_hidePass ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(
+                      _hidePass ? Icons.visibility : Icons.visibility_off),
                   onPressed: () {
                     setState(() {
                       _hidePass = !_hidePass;
@@ -213,10 +218,10 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
               controller: _confirmPassController,
               obscureText: _hidePass,
               maxLength: 8,
-              decoration: const InputDecoration(
-                labelText: 'Confirm Password *',
-                hintText: 'Confirm the password',
-                icon: Icon(Icons.border_color),
+              decoration: InputDecoration(
+                labelText: LocaleKeys.regispassword.tr(),
+                hintText: LocaleKeys.regispassword.tr(),
+                icon: const Icon(Icons.border_color),
               ),
               validator: _validatePassword,
             ),
@@ -230,19 +235,19 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
               child: Text(LocaleKeys.Register.tr()),
             ),
             ElevatedButton(
-              onPressed: ()async{
+              onPressed: () async {
                 await context.setLocale(Locale('kk'));
               },
               child: const Text('KZ'),
             ),
             ElevatedButton(
-              onPressed: ()async{
+              onPressed: () async {
                 await context.setLocale(Locale('en'));
               },
               child: const Text('EN'),
             ),
             ElevatedButton(
-              onPressed: ()async{
+              onPressed: () async {
                 await context.setLocale(Locale('ru'));
               },
               child: const Text('RU'),
@@ -263,36 +268,32 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
       log('Country: $_selectedCountry');
       log('Story: ${_storyController.text}');
     } else {
-      _showMessage(message: 'Form is not valid! Please review and correct');
+      _showMessage(
+          message: 'Form is not valid! Please review and correct'.tr());
     }
   }
 
-String? validateName(String? value) {
-  final nameExp = RegExp(r'^[A-Z][a-zA-Z]{0,14} [A-Z][a-zA-Z]{0,14}$');
-  if (value == null) {
-    return 'Name is required.';
-  } else if (!nameExp.hasMatch(value)) {
-    return 'Please enter a name with maximum 15 characters for each part (first name and last name), starting with a capital letter.';
-  } else {
-    return null;
+  String? validateName(String? value) {
+    final nameExp = RegExp(r'^[A-Za-z ]+$');
+    if (value == null) {
+      return 'Name is reqired.'.tr();
+    } else if (!nameExp.hasMatch(value)) {
+      return 'Please enter alphabetical characters.'.tr();
+    } else {
+      return null;
+    }
   }
-}
 
-
-bool validatePhoneNumber(String input) {
-  final phoneExp = RegExp(r'^\d{10}$'); 
-  if (input.length != 10) {
-    return false;
+  bool validatePhoneNumber(String input) {
+    final phoneExp = RegExp(r'^\(\d\d\d\)\d\d\d\-\d\d\d\d$');
+    return phoneExp.hasMatch(input);
   }
-  return phoneExp.hasMatch(input);
-}
-
 
   String? validateEmail(String? value) {
     if (value == null) {
-      return 'Email cannot be empty';
+      return 'Email cannot be empty'.tr();
     } else if (!_emailController.text.contains('@')) {
-      return 'Invalid email address';
+      return 'Invalid email address'.tr();
     } else {
       return null;
     }
@@ -300,9 +301,9 @@ bool validatePhoneNumber(String input) {
 
   String? _validatePassword(String? value) {
     if (_passController.text.length != 8) {
-      return '8 character required for password';
+      return '8 character required for password'.tr();
     } else if (_confirmPassController.text != _passController.text) {
-      return 'Password does not match';
+      return 'Password does not match'.tr();
     } else {
       return null;
     }
@@ -330,14 +331,14 @@ bool validatePhoneNumber(String input) {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text(
-            'Registration successful',
-            style: TextStyle(
+          title: Text(
+            'Registration successful'.tr(),
+            style: const TextStyle(
               color: Colors.green,
             ),
           ),
           content: Text(
-            '$name is now a verified register form',
+            '$name is now a verified register form'.tr(),
             style: const TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 18.0,
@@ -356,9 +357,9 @@ bool validatePhoneNumber(String input) {
                   ),
                 );
               },
-              child: const Text(
-                'Verified',
-                style: TextStyle(
+              child: Text(
+                'Verified'.tr(),
+                style: const TextStyle(
                   color: Colors.green,
                   fontSize: 18.0,
                 ),

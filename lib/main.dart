@@ -1,18 +1,22 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:form_app/pages/register_form_page.dart';
+import 'package:form_app/translations/codegen_loader.g.dart';
 
-void main() async{
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  runApp(EasyLocalization(
-      supportedLocales: [Locale('kk'), Locale('en'), Locale('ru')],
-      path: 'assets/translations',
-      fallbackLocale: Locale('kk'),
-      child: MyApp()
-    ),
+  runApp(
+    EasyLocalization(
+        supportedLocales: [Locale('en'), Locale('ru'), Locale('kk')],
+        path: 'assets/translation',
+        fallbackLocale: Locale('en'),
+        assetLoader: CodegenLoader(),
+        child: MyApp()),
   );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -23,7 +27,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      title: 'MYAPP',
+      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
